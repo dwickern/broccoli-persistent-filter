@@ -200,6 +200,13 @@ Filter.prototype.build = function() {
         plugin._logger.info('applyPatches', 'duration:', timeSince(prevTime), JSON.stringify(instrumentation));
         plugin._needsReset = false;
         return result;
+      }).catch(function(err) {
+        if (err.code === 'ENOENT') {
+          // the file was probably deleted or renamed
+          plugin._needsReset = true;
+          return;
+        }
+        throw err;
       });
     }));
   });
